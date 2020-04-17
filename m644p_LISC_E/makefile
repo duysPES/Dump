@@ -14,7 +14,7 @@
 #FUSES........Parameters for avrdude to flash the fuses appropriately.
 OPT_LEVEL   ?= 3
 DEVICE     	= atmega644p
-CLOCK      	= 16000000
+CLOCK      	= 11059200
 PROGRAMMER 	= -cusbtiny -Pusb
 CONF 	   	= /etc/avrdude.conf
 FUSES      	= -U lfuse:w:0xe2:m -U hfuse:w:0x99:m -U efuse:w:0xfd:m

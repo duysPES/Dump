@@ -18,26 +18,26 @@ void Usart_Init(void) {
 }
 
 void Spi_Init(void) {
-//  SPI_DDR |= B_MISO;  // set  MISO as output; leave rest as input
-//  PORTD |= B_SS;      // leave SS as input high
-//  SPCR |= _BV(SPE);   //| _BV(SPIE);  // turn on SPI and SPI interrupt
+  //  SPI_DDR |= B_MISO;  // set  MISO as output; leave rest as input
+  //  PORTD |= B_SS;      // leave SS as input high
+  //  SPCR |= _BV(SPE);   //| _BV(SPIE);  // turn on SPI and SPI interrupt
 }
 
 void Sync_Spi() {
-//  uint8_t pre_buf;
-//  uint8_t preamble = 0;
-//  while (1) {
-//    pre_buf = Spi_Recv();
-//    if (pre_buf == 0xFF) {
-//      preamble++;
-//    } else {
-//      preamble = 0;
-//    }
-//
-//    if (preamble == 3) {
-//      break;
-//    }
-//  }
+  //  uint8_t pre_buf;
+  //  uint8_t preamble = 0;
+  //  while (1) {
+  //    pre_buf = Spi_Recv();
+  //    if (pre_buf == 0xFF) {
+  //      preamble++;
+  //    } else {
+  //      preamble = 0;
+  //    }
+  //
+  //    if (preamble == 3) {
+  //      break;
+  //    }
+  //  }
 }
 
 uint8_t Spi_Recv() {
