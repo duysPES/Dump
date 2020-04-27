@@ -5,10 +5,10 @@
  * Author: Duan Uys
  *
  * Description:
- * 	Using existing Matrix-5 LISC-E, the m644p is reflashed to generate a single
- * 	and reoccuring valid packet, according to PEISI protocols.
- * 	
- * Theory of Operations:* 
+ * 	Using existing Matrix-5 LISC-E, the m644p is reflashed to generate a
+ *single and reoccuring valid packet, according to PEISI protocols.
+ *
+ * Theory of Operations:*
  *	N/A
  *
  * *All Rights Reserved*
@@ -21,6 +21,7 @@
 #include "../lib/comms.h"
 #include "../lib/globals.h"
 
+volatile uint64_t TIMER = 0;
 
 void Blink(uint8_t bv) {
   DBG_PORT |= bv;
@@ -32,7 +33,8 @@ void Blink(uint8_t bv) {
 void Setup() {
   //-- RELAY INIT --//
   RELAY_DDR |= RELAY1 | RELAY2;
-  
+  RELAY_PORT |= RELAY1;
+
   //-- DBG INIT --//
   DBG_DDR |= DBG_FSK_XMIT | DBG_FSK_RECV | DBG_CHKSUM_ERR;
 
@@ -41,9 +43,20 @@ void Setup() {
   FSK_TX_PORT |= A_FSK_TX;
   DBG_PORT &= ~DBG_FSK_XMIT;
 
-  //Spi_Init();
+
+  // -- TIMER setup 1ms --//
+  TCCR0A |= _BV(WGM01);
+  TCCR0B |= _BV(WGM02) | _BV(CS01);
+  OCR0A = 54; // 1ms
+  TIMSK0 |= _BV(OCIE0A);
+ 
+  // Spi_Init();
   Usart_Init();
   sei();
+}
+
+uint64_t millis(){
+   return TIMER;
 }
 
 uint8_t Verify_Checksum(const MESSAGE_t *msg) {
@@ -63,15 +76,32 @@ uint8_t Verify_Checksum(const MESSAGE_t *msg) {
 
 int main(void) {
   MESSAGE_t *msg = &Msg;
-  uint8_t packet[] = {0xbe, 0xef, 0xfa, 0x05, 0xae}; 
-
+  msg->size = 5;
+  uint8_t packet[] = {0xbe, 0xef, 0xfa, 0x05, 0xae};
   memcpy(msg->data, packet, 5);
 
   Setup();
+
+  uint64_t ms = millis();
   for (;;) {
-   if(Verify_Checksum(msg))
-    fsk_modulate(msg, DEFAULT_FSK_PREAMBLE);
-   else
-    Blink(DBG_CHKSUM_ERR);
- }
+
+    if (millis()-ms >= (uint64_t)100000){
+    	// turn off relay
+	RELAY_PORT &= ~RELAY1;
+	_delay_ms(1000);
+	RELAY_PORT |= RELAY1;
+	ms = millis();
+    }
+
+    if (Verify_Checksum(msg))
+      fsk_modulate(msg, DEFAULT_FSK_PREAMBLE);
+    else
+      Blink(DBG_CHKSUM_ERR);
+
+    _delay_ms(100);
+  }
+}
+
+ISR(TIMER0_COMPA_vect){
+ TIMER++;
 }

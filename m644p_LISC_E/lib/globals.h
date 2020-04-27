@@ -63,7 +63,7 @@ typedef struct {
 
 #define FSK_TX_DDR DDRA
 #define FSK_TX_PORT PORTA
-#define A_FSK_TX _BV(PA7)
+#define A_FSK_TX _BV(PA6)
 
 #define FSK_RX_DDR DDRB
 #define FSK_RX_PORT PORTB
@@ -79,7 +79,6 @@ typedef struct {
 #define DBG_FSK_XMIT _BV(PC0)
 #define DBG_FSK_RECV _BV(PC1)
 #define DBG_CHKSUM_ERR _BV(PC2)
-
 
 extern MESSAGE_t Msg;
 
