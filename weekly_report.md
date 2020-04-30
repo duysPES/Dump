@@ -1,4 +1,50 @@
 
+
+## 4/27/2020
+
+### Achievements
+
+* Integration test succeeds, f/w for Modulator checks each incoming packet from HOST and blinks an LED to indicate the command being modulated
+
+* Replaced logic behind debugging led pins and visually showing commands being sent. Removed the global definitions floating all over the place and replaced with a global structure
+wrapped around a Hardware Abstraction Layer. 
+
+* Created logic that creates a timeout, when listening for incoming packets from host. Nominally, the first byte to arrive can mean either 1) Command 2)size of data or 3) filler
+and if it is deterimined to be an arbitrary amount of data being sent, it will activate an SPI timeout of 125ms. In the event of a timeout, it will return an error with the signal
+that it was garbaged that was recieved.
+
+* There is now another layer of safety that is controlled by software in the Modulation f/w, one that prevents any information being modulated on the line if that packet does not
+contain a valid PEISI command.
+
+* Able to successfully ask slave device to dump both registers to host, when asked with specific command. The communication process is smart, in that instead of slave sending a fixed
+length everytime, it first responds to host with the length of the buffer that is non-zero. The f/w for adding to these buffers is actually wrapped in a struct that keeps a constant
+count of elements being added and removed, that way when the time comes to send the length (especially at SPI speeds) it doesn't waste time counting non-zero elements.
+
+* Restructured the makefile to allow for conditional compilation - meaning the global libraries that are utilized throughout each project doesn't have to be added to any one project unless
+you absolutely need it. Not including files that you will not need, will decrease size of program.
+
+* Down graded entire operation to run @ 3.3V, this allows for lower current consumption and direct communication with RPi (no need for logic level converter). The only downside, is ADC resolution has
+been decreased from 4.8mV per bit to 3.2mV per bit. Not a big deal, as if we are really going to utilize ADC channels, we would rather buy an off-the-shelf 12bit > adc for maximum resolution.
+
+* MILESTONE - The software for Host and firmware on Modulation Module seems to be in a very stable and working condition, passing all  integration tests.
+
+### To Do
+
+* ~~Create Modulaion f/w that handles if incoming packets are not of valid length -- right now if packet is not at 5 bytes in length, code hangs in wrong state...~~
+
+* Store valid COMMANDS in EERPOM, and construct a way to update commands
+
+* ~~Operate whole system using 3.3V in order to see if we can get rid of logic level conversions~~
+
+* ~~Create logic that dumps SPI registers to host~~
+
+### Problems
+### Ideas
+
+
+
+
+
 ## 4/21/2020
 
 ### Achievements
