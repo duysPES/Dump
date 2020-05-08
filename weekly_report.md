@@ -1,4 +1,27 @@
+## 5/4/2020
 
+### Achievements
+
+[ PEISI Addressable Switch ]
+
+* Our 'football' is able to successfully demodulate a signal coming from the ISI switch.
+
+* We managed to establish communication with ISI switch running PES protocol, with custom firmware and driver. 
+
+[ Pioneer Surface System ]
+
+* Added a UID to each individual module for use with host to establish location of module in slot. The UID is retrievable by an added command
+
+* Converted the internal buffer registers on all digital components from unsigned 8 bit values to floats (for decimal support). The logic was added to serialize these float numbers and sent via SPI. The host (RPi) is able to reconstruct the raw values back into their respective float values. This decision was based on the fact that incoming values based on ADC logic will need to be represented as decimal values and not pure integers.
+
+* Originally the design forced new digital components to define the functino `Spi_Process_Cmd` individually, however this logic has been moved into the background to be taken care of in the libraries as the logic to process individual commands should be universal on all digital components.
+
+### To Do
+### Problems
+
+* We were NOT able to effectively use our 'football' to communicate to a switch. 
+
+### Ideas
 
 ## 4/27/2020
 
